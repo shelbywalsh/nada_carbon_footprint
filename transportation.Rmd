@@ -45,15 +45,28 @@ all_spend_grouping <- all_data  %>%
   
 ```
 
+# Read in supplier distances via csv from google sheets
+```{r}
+supplier_distances <- read_csv("Supplier Distances Used for CF - Sheet1.csv") %>% 
+  clean_names() %>% 
+  select(vendor_name, distance_to_nada_2_ways_km) %>% 
+  rename(distance_km = "distance_to_nada_2_ways_km") %>% 
+  rename(vendor = "vendor_name")
+```
+
+
 # Total of 108 suppliers in 2019
 # 29 suppliers make up top 80% of spend
 # Category A: Top 29 Suppliers 
 
 Left Coast Naturals (1)
 ```{r}
+left_coast_naturals <- supplier_distances %>% 
+  filter(vendor == "Left Coast Naturals")
+
 distance01 <- all_data %>% 
   filter(grepl('Left Coast Naturals', vendor)) %>% 
-  add_column(distance_km = 14)
+  add_column(distance_km = left_coast_naturals$distance_km)
   
 ```
 
@@ -246,6 +259,9 @@ distance28 <- all_data %>%
   add_column(distance_km = 4)
 ```
 
+
+#Category B 80-95% of spend 
+
 Nina's Pierogi (29)
 ```{r}
 distance29 <- all_data %>% 
@@ -253,9 +269,8 @@ distance29 <- all_data %>%
   add_column(distance_km = 83)
 ```
 
-Adding more suppliers to DF's
 
-Lakehouse Foods (30) #WORK
+Lakehouse Foods (30) #NEED TO LOOK UP ADDRESS------------
 ```{r}
 distance30 <- all_data %>% 
   filter(grepl('Lakehouse Foods', vendor)) %>% 
@@ -304,14 +319,14 @@ distance36 <- all_data %>%
   add_column(distance_km = 28.8)
 ```
 
-Beyond Bread (37) #WORK
+Beyond Bread (37) #NEED TO LOOK UP ADDRESS-------------------
 ```{r}
 distance37 <- all_data %>% 
   filter(grepl('Beyond Bread', vendor)) %>% 
   add_column(distance_km = 999)
 ```
 
-Dental Lace Inc. (38) #Double check this one
+Dental Lace Inc. (38) #Double check this one----------------
 ```{r}
 distance38 <- all_data %>% 
   filter(grepl('Dental Lace Inc.', vendor)) %>% 
@@ -360,7 +375,7 @@ distance44 <- all_data %>%
   add_column(distance_km = 28.4)
 ```
 
-Kooshoo (45) #WORK
+Kooshoo (45) #LOOK UP ADDRESS--------------
 ```{r}
 distance45 <- all_data %>% 
   filter(grepl('Kooshoo', vendor)) %>% 
@@ -521,6 +536,8 @@ distance67 <- all_data %>%
   add_column(distance_km = 3.8)
 ```
 
+
+# Category C: 95-100% of spend
 Foothills Creamery Ltd. (68)
 ```{r}
 distance68 <- all_data %>% 
@@ -577,7 +594,7 @@ distance75 <- all_data %>%
   add_column(distance_km = 7.2)
 ```
 
-Purity Life (76) #CHECK THIS ONE 
+Purity Life (76) #CHECK THIS ONE --------------
 ```{r}
 distance76 <- all_data %>% 
   filter(grepl('Purity Life', vendor)) %>% 
@@ -876,11 +893,11 @@ local <- purchaseorder_distance %>%
 Something weird going on giving me a fatal error
 # Sensitivity analysis using different emisison factors (See notees 4-xx)
 ```{r}
-#short_ton_sensitivity <- purchaseorder_distance %>%  
+  short_ton_sensitivity <- purchaseorder_distance %>%  
   group_by(vendor) %>% 
   summarize(distance_km = sum(distance_km)) %>% # Sum total distance by each vendor
   arrange(desc(distance_km)) %>%  # Group by vendor to see total distance by each vendor, arrange in descending order of total distance
-  mutate(miles_traveled = distance_km*0.621371)  # Convert km to miles
+  mutate(miles_traveled = distance_km*0.621371) %>%  # Convert km to miles
   mutate(total_miles = sum(sum_distance_km)*0.621371) %>% # calculate total miles (to use in other calcs)
   mutate(kg_CO2_pershortton = 0.1618) %>% # See note (4) for this emission factor 
   mutate(emissions_kgCO2 = kg_CO2_pershortton*miles_traveled) %>%  # Calculate emissions per vendor
