@@ -72,23 +72,32 @@ distance01 <- all_data %>%
 
 Discovery Organics (2)
 ```{r}
+discovery_organics <- supplier_distances %>% 
+  filter(vendor == "Discovery Organics")
+
 distance02 <- all_data %>% 
   filter(grepl('Discovery Organics', vendor)) %>% 
-  add_column(distance_km = 6.6)
+  add_column(distance_km = discovery_organics$distance_km)
 ```
 
 Horizon Distributors (3)
 ```{r}
+horizon_distributors <- supplier_distances %>% 
+  filter(vendor == "Horizon Distributors")
+
 distance03 <- all_data %>% 
   filter(grepl('Horizon Distributors', vendor)) %>% 
-  add_column(distance_km = 29.4)
+  add_column(distance_km = horizon_distributors$distance_km)
 ```
 
 Organic Matters (4)
 ```{r}
+organic_matters <- supplier_distances %>% 
+  filter(vendor == "Organic Matters")
+
 distance04 <- all_data %>% 
   filter(grepl('Organic Matters', vendor)) %>% 
-  add_column(distance_km = 14)
+  add_column(distance_km = organic_matters$distance_km)
 ```
 
 LFT Group Brands Ltd. (5)
@@ -890,19 +899,19 @@ local <- purchaseorder_distance %>%
   mutate_if(is.numeric, ~round(., 3))
 ```
 
-Something weird going on giving me a fatal error
-# Sensitivity analysis using different emisison factors (See notees 4-xx)
+
+# Sensitivity analysis using different emisison factors (See note 4)
 ```{r}
   short_ton_sensitivity <- purchaseorder_distance %>%  
   group_by(vendor) %>% 
-  summarize(distance_km = sum(distance_km)) %>% # Sum total distance by each vendor
-  arrange(desc(distance_km)) %>%  # Group by vendor to see total distance by each vendor, arrange in descending order of total distance
-  mutate(miles_traveled = distance_km*0.621371) %>%  # Convert km to miles
-  mutate(total_miles = sum(sum_distance_km)*0.621371) %>% # calculate total miles (to use in other calcs)
-  mutate(kg_CO2_pershortton = 0.1618) %>% # See note (4) for this emission factor 
-  mutate(emissions_kgCO2 = kg_CO2_pershortton*miles_traveled) %>%  # Calculate emissions per vendor
-  mutate(total_emissions = sum(emissions_kgCO2) %>% # Sum emissions/vendor to get total emissions
-  mutate(pct_contribution =emissions_kgCO2/total_emissions*100) %>% # See percent contribution to emissions by supplier
+  summarize(distance_km = sum(distance_km)) %>%  # Sum total distance by each vendor
+  arrange(desc(distance_km)) %>%    # Group by vendor to see total distance by each vendor, arrange in descending order of total distance
+  mutate(miles_traveled = distance_km*0.621371) %>%   # Convert km to miles
+  mutate(total_miles = sum(miles_traveled)) %>%  # calculate total miles (to use in other calcs)
+  mutate(kg_CO2_pershortton = 0.1618) %>%    # See note (4) for this emission factor 
+  mutate(emissions_kgCO2 = kg_CO2_pershortton*miles_traveled*10) %>%   # Calculate emissions per vendor (assume each truck carries 10 tons)
+  mutate(total_emissions = sum(emissions_kgCO2)) %>%  # Sum emissions/vendor to get total emissions
+  mutate(pct_contribution =emissions_kgCO2/total_emissions*100) %>%  # See percent contribution to emissions by supplier
   mutate(cumulative_pct_emissions = cumsum(pct_contribution)) %>% # See cumulative percent contribution
   mutate_if(is.numeric, ~round(., 2)) # Round to 3 decimal places
   
