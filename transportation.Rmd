@@ -51,7 +51,7 @@ supplier_distances <- read_csv("Supplier Distances Used for CF - Sheet1.csv") %>
   clean_names() %>% 
   select(vendor_name, distance_to_nada_2_ways_km) %>% 
   rename(distance_km = "distance_to_nada_2_ways_km") %>% 
-  rename(vendor = "vendor_name")
+  rename(vendor = "vendor_name") 
 ```
 
 
@@ -279,11 +279,11 @@ distance29 <- all_data %>%
 ```
 
 
-Lakehouse Foods (30) #NEED TO LOOK UP ADDRESS------------
+Lakehouse Foods (30) 
 ```{r}
 distance30 <- all_data %>% 
   filter(grepl('Lakehouse Foods', vendor)) %>% 
-  add_column(distance_km = 999)
+  add_column(distance_km = 8.8)
 ```
 
 Hives for Humanity (31)
@@ -328,14 +328,14 @@ distance36 <- all_data %>%
   add_column(distance_km = 28.8)
 ```
 
-Beyond Bread (37) #NEED TO LOOK UP ADDRESS-------------------
+Beyond Bread (37) 
 ```{r}
 distance37 <- all_data %>% 
   filter(grepl('Beyond Bread', vendor)) %>% 
-  add_column(distance_km = 999)
+  add_column(distance_km = 15)
 ```
 
-Dental Lace Inc. (38) #Double check this one----------------
+Dental Lace Inc. (38) 
 ```{r}
 distance38 <- all_data %>% 
   filter(grepl('Dental Lace Inc.', vendor)) %>% 
@@ -384,11 +384,11 @@ distance44 <- all_data %>%
   add_column(distance_km = 28.4)
 ```
 
-Kooshoo (45) #LOOK UP ADDRESS--------------
+Kooshoo (45) 
 ```{r}
 distance45 <- all_data %>% 
   filter(grepl('Kooshoo', vendor)) %>% 
-  add_column(distance_km = 999)
+  add_column(distance_km = 1208)
 ```
 
 The Mill Factor (46)
@@ -603,7 +603,7 @@ distance75 <- all_data %>%
   add_column(distance_km = 7.2)
 ```
 
-Purity Life (76) #CHECK THIS ONE --------------
+Purity Life (76) 
 ```{r}
 distance76 <- all_data %>% 
   filter(grepl('Purity Life', vendor)) %>% 
@@ -806,7 +806,7 @@ distance104 <- all_data %>%
   add_column(distance_km = 10.4)
 ```
 
-Wize Monkey (105) #CHECK SPELLING
+Wize Monkey (105) 
 ```{r}
 distance105 <- all_data %>% 
   filter(grepl('Wize Monkey', vendor)) %>% 
@@ -820,18 +820,18 @@ distance106 <- all_data %>%
   add_column(distance_km = 2.6)
 ```
 
-Life Without Plastic (107) #CHECK ADDRESS
+Life Without Plastic (107)
 ```{r}
 distance107 <- all_data %>% 
   filter(grepl('Life Without Plastic', vendor)) %>% 
   add_column(distance_km = 9452)
 ```
 
-Drew Bondar (108) #NEED TO LOOK UP AND ADD TO SUPPLIER SHEET
+Drew Bondar (108) (this is the same supplier as Offbeat Produce)
 ```{r}
 distance108 <- all_data %>% 
   filter(grepl('Drew Bondar', vendor)) %>% 
-  add_column(distance_km = 999)
+  add_column(distance_km = 19.2)
 ```
 
 
@@ -900,7 +900,7 @@ local <- purchaseorder_distance %>%
 ```
 
 
-# Sensitivity analysis using different emisison factors (See note 4)
+# Sensitivity analysis using short ton emission factor (See note 4)
 ```{r}
   short_ton_sensitivity <- purchaseorder_distance %>%  
   group_by(vendor) %>% 
